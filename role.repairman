@@ -19,12 +19,22 @@ var roleRepairman = {
 			if(targets.length > 0) {
 				if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
 					creep.moveTo(targets[0]);
-					creep.repair(targets[0]);
-					console.log('repairing' + targets[0].name);
+					console.log('Repairing ' + targets[0].structureType);
 				}
 			}
 			else {
-                creep.moveTo(8,8);
+			    console.log("Repper-Walls")
+                var walls = creep.room.find(FIND_STRUCTURES, {
+						filter: function (object) {
+                                        return structure.structureType == constructedWall && structure.hits < 1000;
+                    }
+                });
+                if(walls.length > 0) {
+                    if(creep.repair(walls[0]) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(walls[0]);
+					    console.log('Repairing ' + walls[0].structureType);
+                    }
+                }
 			}
 	    }
 	    else {
