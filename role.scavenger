@@ -14,13 +14,27 @@ var roleScavenger = {
 			if(target) {
 				if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
 					creep.moveTo(target);
-				    creep.say('Gold!');
 				}
+			}
+			else {
+			    creep.moveTo(9,16);
 			}
 	    }
 	    else {
-	        console.log('scavenger is full... fixit');
-	        creep.moveTo(9,16);
+	        var targets = creep.room.find(FIND_MY_CREEPS, {
+				filter: function (object) {
+				    return object.carry.energy == 0 && object.memory.role != 'harvester' && object.memory.role != 'scavenger';
+				}
+			});
+			if(targets.length > 0) {
+                if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets[0]);
+                }
+            }
+            else {
+                creep.moveTo(8,11); 
+                console.log('scavenger is full... who needs some gold?');
+            }
 		}
 	}
 };
