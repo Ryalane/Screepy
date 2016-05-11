@@ -2,26 +2,33 @@ var roleHarvester = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+//find extensions and spawns in the room that have space
         var targets = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_EXTENSION ||
-                    structure.structureType == STRUCTURE_SPAWN ||
-                    structure.structureType == STRUCTURE_TOWER ||
-                    structure.structureType == STRUCTURE_CONTAINER) && structure.energy < structure.energyCapacity;
+                    structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity;
             }
         });
-        if(targets.length > 0) {
+//if there is space to fill
+    //harvest the closest mine to the creep if it's not full
+        if(targets.length > 0 && creep.carry.energy < creep.carryCapacity) {
             var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0]);
+            var closestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+            if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(closestSource);
             }
         }
+    //when full, transfer to an empty structure
+        else if(targets.length > 0 && creep.carry.energy == creep.carryCapacity){
+            if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(targets[0]);
+            }
+        }
+//if there is no space to fill, go park (full or not)
         else {
-            var sources = creep.room.find(FIND_SOURCES);
-            console.log('-=storage full=- ' + ' -=mining paused=-');
-            creep.moveTo((sources[0].pos.x+4), (sources[0].pos.y));
+            console.log('parked');
+            creep.moveTo(43,34);
         }
 	}
 };
-
 module.exports = roleHarvester;
