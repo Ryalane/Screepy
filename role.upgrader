@@ -16,10 +16,11 @@ var roleUpgrader = {
 			}
 	    }
 	    else {
-			var sources = creep.room.find(FIND_SOURCES);
-			if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(sources[0]);
-			}
+	        var sources = creep.room.find(FIND_SOURCES);
+            var closestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+            if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(closestSource);
+            }
 	    }
 	}
 };
