@@ -23,7 +23,9 @@ var roleRepairman = {
 				}
 			}
 			else {
-			    console.log("Repper-Walls")
+			    creep.moveTo(43,34);
+			    console.log('Repper Parking');
+/*			    console.log("Repper-Walls");
                 var walls = creep.room.find(FIND_STRUCTURES, {
 						filter: function (object) {
                                         return structure.structureType == constructedWall && structure.hits < 1000;
@@ -35,13 +37,15 @@ var roleRepairman = {
 					    console.log('Repairing ' + walls[0].structureType);
                     }
                 }
+*/
 			}
 	    }
 	    else {
-			var sources = creep.room.find(FIND_SOURCES);
-			if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(sources[0]);
-			}
+	        var sources = creep.room.find(FIND_SOURCES);
+            var closestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+            if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(closestSource);
+            }
 	    }
 	}
 };
