@@ -2,49 +2,75 @@ var roleRepairman = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-
+// if flag is on but creep is empty, turn off flag
 	    if(creep.memory.working && creep.carry.energy == 0) {
             creep.memory.working = false;
 	    }
+
+// if flag is off but creep is full, turn on flag
 	    if(!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
 	        creep.memory.working = true;
 	    }
 
+// if flag is on
 	    if(creep.memory.working) {
-			var targets = creep.room.find(FIND_STRUCTURES, {
+		// my structures with less than full health in the room
+			var targets = creep.room.find(FIND_MY_STRUCTURES, {
 						filter: function (object) {
-							            return object.hits < object.hitsMax;
+							            return object.hits < object.hitsMax && (object.structureType != STRUCTURE_RAMPART);
 						}
 				});
+		// if there are targets, repair them
 			if(targets.length > 0) {
 				if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
 					creep.moveTo(targets[0]);
 					console.log('Repairing ' + targets[0].structureType);
 				}
 			}
+		// else find roads or walls in the room with less than 20k health (unowned structures) or ramparts
 			else {
-			    creep.moveTo(43,34);
-			    console.log('Repper Parking');
-/*			    console.log("Repper-Walls");
-                var walls = creep.room.find(FIND_STRUCTURES, {
-						filter: function (object) {
-                                        return structure.structureType == constructedWall && structure.hits < 1000;
+                var unownedthing = creep.room.find(FIND_STRUCTURES, {
+                    filter: function(object) {
+                        return object.hits < 20000 && (object.structureType == STRUCTURE_ROAD || STRUCTURE_WALL || STRUCTURE_RAMPART);
                     }
                 });
-                if(walls.length > 0) {
-                    if(creep.repair(walls[0]) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(walls[0]);
-					    console.log('Repairing ' + walls[0].structureType);
+			// if there are walls or roads, repair them per above parameters
+                if(unownedthing.length > 0) {
+                    if(creep.repair(unownedthing[0]) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(unownedthing[0]);
+					    console.log('Repairing ' + unownedthing[0].structureType);
                     }
                 }
-*/
+			// if there are not, park the repairer
+                else{
+                    creep.moveTo(7,19);
+			        console.log('Repper Parking');
+                }
+
 			}
 	    }
 	    else {
-	        var sources = creep.room.find(FIND_SOURCES);
-            var closestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-            if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
+// if the flag is off (ie: creep is empty)
+	// find containers in the room with more energy than the creeps carrying capacity
+            var containers = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_CONTAINER) && structure.energy > creep.carryCapacity || _.sum(structure.store) > creep.carryCapacity;
+                    }
+            });
+	// find the closest active source to the creep by range
+	        var closestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+		// if there are containers in the list, move to them and transfer energy to the creep
+            if(containers.length > 0 && containers[0].transfer(creep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(containers[0]);
+            }
+		// if there are no containers in the list, harvest from the nearest source
+            else if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(closestSource);
+            }
+		// if there are no containers in the list and no closest active source, print error
+            else {
+                console.log('rep-error');
             }
 	    }
 	}

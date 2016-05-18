@@ -6,7 +6,8 @@ var roleHarvester = {
         var targets = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_EXTENSION ||
-                    structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity;
+                    structure.structureType == STRUCTURE_SPAWN ||
+                    structure.structureType == STRUCTURE_CONTAINER) && structure.energy < structure.energyCapacity || _.sum(structure.store) < structure.storeCapacity;
             }
         });
 //if there is space to fill
@@ -26,8 +27,8 @@ var roleHarvester = {
         }
 //if there is no space to fill, go park (full or not)
         else {
-            console.log('parked');
-            creep.moveTo(43,34);
+            creep.moveTo(27,33);
+            console.log('harv-parked');
         }
 	}
 };

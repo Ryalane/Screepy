@@ -22,7 +22,7 @@ var roleBuilder = {
     // park if there is no building site
             else {
                 console.log('Builder Parked');
-                creep.moveTo(36,26);
+                creep.moveTo(7,19);
             }
 	    }
 // if flag is off
@@ -31,7 +31,7 @@ var roleBuilder = {
 	        var sources = creep.room.find(FIND_SOURCES);
             var closestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
             if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(closestSource);
+                creep.moveTo(sources[0]);
             }
 	    }
 	}

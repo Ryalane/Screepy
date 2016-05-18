@@ -4,7 +4,7 @@ var roleUpgrader = require('role.upgrader');
 var roleRepairman = require('role.repairman');
 
 module.exports.loop = function () {
-//testingGithub
+
 //cleaning memory of name dump
     for(var name in Memory.creeps) {
     	if(!Game.creeps[name]) {
@@ -38,21 +38,24 @@ module.exports.loop = function () {
     console.log(repairmen.length + ' Repairman');
 
 //build creep : priority by order in if/else statement
-    if(harvesters.length < 3) {
+    if(harvesters.length < 4) {
+//	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], undefined, {role: 'harvester'});
 	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,CARRY,MOVE], undefined, {role: 'harvester'});
 	    console.log('Spawning new Harvester: ' + newName);
     }
     else if(upgraders.length < 5) {
-	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,CARRY,MOVE,MOVE], undefined, {role: 'upgrader'});
+//	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], undefined, {role: 'upgrader'});
+	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,CARRY,MOVE], undefined, {role: 'upgrader'});
 	    console.log('Spawning new Upgrader: ' + newName);
     }
-    else if(repairmen.length < 3) {
-	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,CARRY,MOVE,MOVE], undefined, {role: 'repairman'});
-	    console.log('Spawning new Repairman: ' + newName);
-    }
-    else if(builders.length < 3) {
-	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,CARRY,MOVE,MOVE], undefined, {role: 'builder'});
+    else if(builders.length < 4) {
+//	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], undefined, {role: 'builder'});
+        var newName = Game.spawns.SpawnMaster.createCreep([WORK,CARRY,MOVE], undefined, {role: 'builder'});
 	    console.log('Spawning new Builder: ' + newName);
     }
-
+    else if(repairmen.length < 1) {
+//	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE], undefined, {role: 'repairman'});
+	    var newName = Game.spawns.SpawnMaster.createCreep([WORK,CARRY,MOVE], undefined, {role: 'repairman'});
+	    console.log('Spawning new Repairman: ' + newName);
+    }
 }
